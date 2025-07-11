@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { signIn } from '../services/authService'; // ✅ Use Firebase-based auth
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -9,19 +8,19 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState(''); // ✅ New state
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      await login(email);
-      // Navigation is handled by the useAuth hook
+      await signIn(email, password); // ✅ Firebase login
+      // TODO: redirect or reload (you can use useNavigate or window.location.reload())
     } catch (err) {
-      setError('Login failed. Please check your email and try again.');
+      setError('Login failed. Please check your email and password.');
     } finally {
       setLoading(false);
     }
@@ -32,13 +31,11 @@ const LoginPage: React.FC = () => {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
-             <Logo />
+            <Logo />
           </div>
           <CardTitle>Welcome Back!</CardTitle>
           <CardDescription>
-            Enter your email to log in to your account.
-            <br />
-            <span className="text-xs mt-2 block">(Use admin@quiz.com or alice@quiz.com)</span>
+            Enter your email and password to log in.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -51,6 +48,17 @@ const LoginPage: React.FC = () => {
                 placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-medium">Password</label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
