@@ -8,7 +8,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(''); // ✅ New state
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -17,9 +17,10 @@ const LoginPage: React.FC = () => {
     setError('');
     setLoading(true);
     try {
-      await signIn(email, password); // ✅ Firebase login
+      await signIn(email, password);
       // TODO: redirect or reload (you can use useNavigate or window.location.reload())
-    } catch (err) {
+    } catch (err: any) {
+      console.error("Actual Firebase error:", err); // ✅ This will help us debug
       setError('Login failed. Please check your email and password.');
     } finally {
       setLoading(false);
